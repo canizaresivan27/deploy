@@ -4,9 +4,17 @@ services:
   nginx:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.nginx
     ports:
-      - "1234:80"
+      - "7000:80"
     volumes:
       - ./html:/usr/share/nginx/html
+    restart: always
+
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    ports:
+      - "7001:3000"
     restart: always
