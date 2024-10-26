@@ -1,1 +1,31 @@
-a
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main  # Puedes cambiar esta rama según sea necesario
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Copy files to VPS
+      run: scp -r ./* root@92.118.56.248:/home/administrator/despliegue/
+
+    - name: Deploy with Docker Compose
+      run: |
+        ssh root@92.118.56.248 << 'EOF'
+          cd /home/administrator/despliegue/
+          docker-compose down
+          docker-compose up -d
+        EOF
+
